@@ -5,8 +5,8 @@ package hotel;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import PaqC07.*;
+import PaqHotel.Cliente;
+import PaqHotel.Hotel;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -54,22 +54,25 @@ public class secondFrame extends JFrame {
     private JTextField tfFechaBaja;
     private JLabel lbFechaAlta;
     private JLabel lbFechaBaja;
-    protected static Registro H;
+    private JButton lbBuscarPorDNIButton;
+    protected static Hotel H;
     private int tipo;
     private int numEstandar;
     private int numBalcon;
     private int numSuite;
 
 
-    public secondFrame(){
+    public secondFrame() {
         setContentPane(Reservas);
         try {
             H = Leer();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        if (H == null)
+            H = new Hotel();
         setTitle("Reservas");
         setSize(900,400);
         setVisible(true);
@@ -278,13 +281,35 @@ public class secondFrame extends JFrame {
                 }
             }
         });
+
+
+        //Examen
+        lbBuscarPorDNIButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int DNI = Integer.parseInt(tfDni.getText());
+                Cliente salida = H.buscarPorDni(DNI);
+                if (salida != null){
+                    tfNombre.setText(salida.getNombre());
+                    tfApellidos.setText(salida.getApellidos());
+                    tfDireccion.setText("**El cliente no tiene dirección como atributo**");
+                    tfTelefono.setText(Integer.toString(salida.getTeléfono()));
+                    tfEmail.setText("**El cliente no tiene email como atributo**");
+                    tfTarjeta.setText(Integer.toString(salida.getNumTarjeta()));
+                    tfFechaAlta.setText(salida.getAlta());
+                    tfFechaBaja.setText(salida.getBaja());
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "El cliente no tiene reservas en el hotel.");
+            }
+        });
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         secondFrame second = new secondFrame();
     }
 
-    public static void Serializar(Registro r) throws IOException{
+    public static void Serializar(Hotel r) throws IOException{
         FileOutputStream fos = new FileOutputStream("reg.dat");
         ObjectOutputStream salida = new ObjectOutputStream(fos);
         salida.writeObject(r);
@@ -294,17 +319,17 @@ public class secondFrame extends JFrame {
 
 
 
-    public static Registro Leer() throws IOException, ClassNotFoundException {
+    public static Hotel Leer() throws IOException, ClassNotFoundException {
         if ((exists(Path.of("reg.dat")) == true)){
             FileInputStream fis = new FileInputStream("reg.dat");
             ObjectInputStream entrada = new ObjectInputStream(fis);
-            Registro salida = (Registro) entrada.readObject();
+            Hotel salida = (Hotel) entrada.readObject();
             fis.close();
             entrada.close();
             return salida;
         }
         else{
-            return new Registro();
+            return new Hotel();
         }
     }
 

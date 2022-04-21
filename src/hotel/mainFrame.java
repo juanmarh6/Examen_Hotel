@@ -15,7 +15,7 @@ public class mainFrame extends JFrame {
     private JLabel lbMensaje;
 
 
-    public mainFrame(){
+    public mainFrame() {
         setContentPane(Hotel);
         setTitle("Hotel");
         setSize(450,300);

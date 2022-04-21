@@ -1,6 +1,7 @@
 package hotel;
 
-import PaqC07.*;
+import PaqHotel.Cliente;
+import PaqHotel.Hotel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +20,7 @@ public class thirdFrame extends JFrame{
     private JLabel lbTipo;
     private JTextField tfTipo;
     private JButton btMostrar;
-    protected Registro H;
+    protected Hotel H;
 
     thirdFrame(){
         H = secondFrame.H;
@@ -131,6 +132,7 @@ public class thirdFrame extends JFrame{
                 mostrarMapa2(dni);
             }
         });
+
     }
 
     public static void main(String[] args) {thirdFrame A = new thirdFrame();}
